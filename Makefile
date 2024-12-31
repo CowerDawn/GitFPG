@@ -1,20 +1,17 @@
-PROGRAM_NAME = gitfpg
-INSTALL_PATH = /usr/bin
-ICON_PATH = fpg.png
-DESKTOP_FILE_PATH = /usr/share/applications/$(PROGRAM_NAME).desktop
-PYINSTALLER_CMD = pyinstaller --onefile --windowed --icon=$(ICON_PATH) $(PROGRAM_NAME).py
+TARGET = gitfpg
 
-all: build install
-
-build:
-	$(PYINSTALLER_CMD)
+all: install
 
 install:
-	sudo cp dist/$(PROGRAM_NAME) $(INSTALL_PATH)/$(PROGRAM_NAME)
-	sudo chmod +x $(INSTALL_PATH)/$(PROGRAM_NAME)
-	convert -size 256x256 xc:white -font Arial -pointsize 50 -fill black -draw "text 50,150 'FPG'" $(ICON_PATH)
-	echo "[Desktop Entry]\nType=Application\nName=$(PROGRAM_NAME)\nExec=$(INSTALL_PATH)/$(PROGRAM_NAME)\nIcon=$(PWD)/$(ICON_PATH)\nCategories=Utility;" | sudo tee $(DESKTOP_FILE_PATH) > /dev/null
+	pyinstaller --onefile $(TARGET).py
+	sudo cp dist/$(TARGET) /usr/bin/$(TARGET)
+	sudo chmod +x /usr/bin/$(TARGET)
+
+uninstall:
+	sudo rm -f /usr/bin/$(TARGET)
+
+run:
+	python $(TARGET).py
 
 clean:
-	rm -rf build dist $(PROGRAM_NAME).spec
-	sudo rm -f $(INSTALL_PATH)/$(PROGRAM_NAME) $(DESKTOP_FILE_PATH)
+	rm -rf __pycache__ build dist $(TARGET).spec
